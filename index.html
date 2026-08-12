@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Krispy</title>
+	<meta name="description" content="Krispy — UI, environments, 3D modeling, animation, and graphic design for Roblox.">
+	<meta name="theme-color" content="#17191d">
+	<meta property="og:title" content="Krispy">
+	<meta property="og:description" content="UI, environments, 3D, animation & graphic design for Roblox.">
+	<meta property="og:type" content="website">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317191d'/%3E%3Ctext x='29' y='45' font-family='Arial, sans-serif' font-size='38' font-weight='800' fill='%23e6e8ea' text-anchor='middle'%3EK%3C/text%3E%3Ccircle cx='47' cy='41' r='5.5' fill='%2366c0f4'/%3E%3C/svg%3E">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+	<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+
+		html {
+			scroll-behavior: smooth;
+			color-scheme: dark;
+			scrollbar-color: #2a2e35 #131519;
+		}
+
+		::-webkit-scrollbar { width: 12px; }
+		::-webkit-scrollbar-track { background: #131519; }
+
+		::-webkit-scrollbar-thumb {
+			background: #2a2e35;
+			border-radius: 6px;
+			border: 3px solid #131519;
+		}
+
+		::-webkit-scrollbar-thumb:hover { background: #3a3f47; }
+
+		body {
+			background-color: #15171b;
+			background-image:
+				radial-gradient(1100px 560px at 50% -120px, rgba(120, 150, 180, 0.16), transparent 65%),
+				linear-gradient(180deg, #1b1e23 0px, #131519 900px);
+			color: #e2e6e9;
+			font-family: "Archivo", "Segoe UI", system-ui, sans-serif;
+			line-height: 1.7;
+		}
+
+		::selection { background: #66c0f4; color: #15171b; }
+
+		body::after {
+			content: "";
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			opacity: 0.05;
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+		}
+
+		.wrap {
+			max-width: 880px;
+			margin: 0 auto;
+			padding: 0 28px;
+		}
+
+		.mono {
+			font-family: "IBM Plex Mono", monospace;
+		}
+
+		.roles {
+			margin-top: 18px;
+			font-family: "IBM Plex Mono", monospace;
+			font-size: 0.85rem;
+			color: #949aa0;
+			letter-spacing: 0.02em;
+		}
+
+		.roles b {
+			color: #66c0f4;
+			font-weight: 400;
+			padding: 0 8px;
+		}
+
+		header {
+			padding: 84px 0 52px;
+		}
+
+		.glow {
+			position: fixed;
+			inset: 0;
+			z-index: -1;
+			overflow: hidden;
+			pointer-events: none;
+		}
+
+		.glow::before,
+		.glow::after {
+			content: "";
+			position: absolute;
+			border-radius: 50%;
+		}
+
+		.glow::before {
+			top: -30%;
+			left: -12%;
+			width: 58%;
+			height: 85%;
+			background: radial-gradient(closest-side, rgba(102, 192, 244, 0.07), transparent 70%);
+			animation: DriftA 26s ease-in-out infinite alternate;
+		}
+
+		.glow::after {
+			top: -18%;
+			right: -14%;
+			width: 48%;
+			height: 75%;
+			background: radial-gradient(closest-side, rgba(130, 160, 190, 0.055), transparent 70%);
+			animation: DriftB 34s ease-in-out infinite alternate;
+		}
+
+		@keyframes DriftA {
+			from { transform: translate3d(-5%, -4%, 0) scale(1); }
+			to { transform: translate3d(12%, 9%, 0) scale(1.18); }
+		}
+
+		@keyframes DriftB {
+			from { transform: translate3d(6%, 8%, 0) scale(1.1); }
+			to { transform: translate3d(-10%, -6%, 0) scale(0.92); }
+		}
+
+		header h1 {
+			font-family: "Archivo", "Segoe UI", sans-serif;
+			font-weight: 900;
+			font-size: clamp(3.4rem, 11vw, 6.4rem);
+			line-height: 0.95;
+			letter-spacing: -0.03em;
+			margin-left: -0.05em;
+		}
+
+		header h1 .tick { color: #66c0f4; margin-left: 0.07em; display: inline-block; }
+
+		.js header h1 .l {
+			display: inline-block;
+			animation: Rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		}
+
+		.js header h1 .l:nth-child(1) { animation-delay: 0.03s; }
+		.js header h1 .l:nth-child(2) { animation-delay: 0.09s; }
+		.js header h1 .l:nth-child(3) { animation-delay: 0.15s; }
+		.js header h1 .l:nth-child(4) { animation-delay: 0.21s; }
+		.js header h1 .l:nth-child(5) { animation-delay: 0.27s; }
+		.js header h1 .l:nth-child(6) { animation-delay: 0.33s; }
+
+		.js header h1 .tick {
+			animation: Pop 0.5s 0.55s cubic-bezier(0.3, 1.6, 0.4, 1) both;
+		}
+
+		@keyframes Rise {
+			from { opacity: 0; transform: translateY(0.5em); }
+			to { opacity: 1; transform: none; }
+		}
+
+		@keyframes Pop {
+			0% { opacity: 0; transform: scale(0.3); }
+			70% { opacity: 1; transform: scale(1.25); }
+			100% { opacity: 1; transform: scale(1); }
+		}
+
+		.intro {
+			margin-top: 26px;
+			max-width: 540px;
+			color: #b0b5bb;
+			font-size: 1.02rem;
+			text-wrap: balance;
+		}
+
+		.links {
+			margin-top: 28px;
+			display: flex;
+			gap: 12px;
+		}
+
+		.link-chip {
+			display: inline-flex;
+			align-items: center;
+			gap: 9px;
+			padding: 9px 16px;
+			background: #101216;
+			border: 1px solid rgba(255, 255, 255, 0.06);
+			border-radius: 4px;
+			font-family: "IBM Plex Mono", monospace;
+			font-size: 0.8rem;
+			letter-spacing: 0.04em;
+			color: #b0b5bb;
+			text-decoration: none;
+			transition: border-color 0.2s, color 0.2s, transform 0.2s;
+		}
+
+		.link-chip svg { width: 16px; height: 16px; fill: #66c0f4; }
+
+		.link-chip:hover {
+			border-color: #66c0f4;
+			color: #e2e6e9;
+			transform: translateY(-2px);
+		}
+
+		.socials {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+		}
+
+		.socials a { display: flex; }
+
+		.socials svg {
+			width: 18px;
+			height: 18px;
+			fill: #767c83;
+			transition: fill 0.2s;
+		}
+
+		.socials a:hover svg { fill: #66c0f4; }
+
+		.tags {
+			margin-top: 16px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.tag {
+			font-size: 0.78rem;
+			padding: 3px 10px;
+			border-radius: 3px;
+			background: rgba(102, 192, 244, 0.12);
+			color: #7cc0ec;
+			transition: background 0.15s, color 0.15s;
+		}
+
+		.tag:hover {
+			background: rgba(102, 192, 244, 0.22);
+			color: #a5d7f8;
+		}
+
+		section { padding: 46px 0 12px; }
+
+		.band {
+			background: #101216;
+			border-top: 1px solid rgba(255, 255, 255, 0.03);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+		}
+
+		.sec-head {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 16px;
+			padding-top: 15px;
+			padding-bottom: 15px;
+		}
+
+		section h2 {
+			font-family: "Archivo", "Segoe UI", sans-serif;
+			font-weight: 800;
+			font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+			letter-spacing: -0.01em;
+		}
+
+		.ghost {
+			font-family: "Archivo", "Segoe UI", sans-serif;
+			font-weight: 900;
+			font-size: clamp(2rem, 5vw, 2.7rem);
+			line-height: 1;
+			color: rgba(232, 239, 245, 0.1);
+			font-variant-numeric: tabular-nums;
+			user-select: none;
+		}
+
+		.js .reveal {
+			opacity: 0;
+			transform: translateY(26px);
+			transition: opacity 0.7s ease, transform 0.7s ease;
+		}
+
+		.js .reveal.in { opacity: 1; transform: none; }
+
+		@media (prefers-reduced-motion: reduce) {
+			.js header h1 .l,
+			.js header h1 .tick { animation: none; }
+			.js .reveal { opacity: 1; transform: none; transition: none; }
+			.glow::before,
+			.glow::after { animation: none; }
+		}
+
+		section > .wrap > p {
+			color: #a9aeb4;
+			margin-top: 18px;
+			max-width: 600px;
+			font-size: 0.98rem;
+			text-wrap: pretty;
+		}
+
+		.media-grid {
+			margin-top: 30px;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 16px;
+		}
+
+		.media {
+			position: relative;
+			aspect-ratio: 16 / 9;
+			background:
+				repeating-linear-gradient(-45deg, transparent 0 10px, rgba(255, 255, 255, 0.012) 10px 11px),
+				linear-gradient(180deg, #21242a, #191c21);
+			border: 1px solid rgba(255, 255, 255, 0.04);
+			border-radius: 4px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #767c83;
+			font-family: "IBM Plex Mono", monospace;
+			font-size: 0.78rem;
+			overflow: hidden;
+			box-shadow:
+				inset 0 1px 0 rgba(255, 255, 255, 0.04),
+				0 14px 28px -14px rgba(0, 0, 0, 0.55);
+			transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+			transition-timing-function: cubic-bezier(0.2, 0.6, 0.2, 1);
+		}
+
+		.media:hover {
+			border-color: #66c0f4;
+			transform: translateY(-3px);
+			box-shadow:
+				inset 0 1px 0 rgba(255, 255, 255, 0.04),
+				0 22px 40px -16px rgba(0, 0, 0, 0.65),
+				0 0 18px rgba(102, 192, 244, 0.16);
+		}
+
+		.media img,
+		.media video {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.media img { cursor: zoom-in; }
+
+		.media iframe {
+			width: 100%;
+			height: 100%;
+			border: 0;
+			display: block;
+		}
+
+		.lightbox {
+			position: fixed;
+			inset: 0;
+			z-index: 50;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 4vmin;
+			background: rgba(8, 10, 14, 0.88);
+			backdrop-filter: blur(6px);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.25s ease;
+			cursor: zoom-out;
+		}
+
+		.lightbox.open {
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		.lightbox img {
+			max-width: 100%;
+			max-height: 100%;
+			border-radius: 6px;
+			box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
+			transform: scale(0.96);
+			transition: transform 0.25s ease;
+		}
+
+		.lightbox.open img { transform: scale(1); }
+
+		.media.wide { grid-column: span 2; }
+
+		.badge {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			font-family: "IBM Plex Mono", monospace;
+			font-size: 0.66rem;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			padding: 4px 9px;
+			background: rgba(10, 12, 16, 0.72);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 3px;
+			color: #7cc0ec;
+			pointer-events: none;
+		}
+
+		footer {
+			margin-top: 90px;
+			background: #101216;
+			border-top: 1px solid rgba(255, 255, 255, 0.03);
+			padding: 40px 0 44px;
+		}
+
+		footer .wrap {
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			gap: 16px;
+		}
+
+		footer p {
+			font-family: "IBM Plex Mono", monospace;
+			font-size: 0.8rem;
+			color: #767c83;
+		}
+
+		@media (max-width: 560px) {
+			.media-grid { grid-template-columns: 1fr; }
+			.media.wide { grid-column: span 1; aspect-ratio: 16 / 9; }
+			header { padding-top: 56px; }
+		}
+	</style>
+</head>
+<body>
+	<script>document.documentElement.classList.add("js");</script>
+
+	<div class="glow" aria-hidden="true"></div>
+
+	<header>
+		<div class="wrap">
+			<h1><span class="l">K</span><span class="l">r</span><span class="l">i</span><span class="l">s</span><span class="l">p</span><span class="l">y</span><span class="tick">.</span></h1>
+			<div class="roles">UI<b>/</b>Environments<b>/</b>3D<b>/</b>Animation<b>/</b>Graphics</div>
+			<p class="intro">I make Roblox games look good. Menus, worlds, gear, thumbnails, basically everything you actually see on screen.</p>
+			<div class="links">
+				<a class="link-chip" href="https://discord.com/users/449764467434192897" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.197.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Discord</a>
+				<a class="link-chip" href="https://www.roblox.com/users/57614724/profile" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.926 23.998 0 18.892 5.075.002 24 5.108ZM15.348 10.09l-5.282-1.453-1.414 5.273 5.282 1.453z"/></svg>Roblox</a>
+			</div>
+		</div>
+	</header>
+
+	<section class="reveal">
+		<div class="band">
+			<div class="wrap sec-head">
+				<h2>UI Design</h2>
+				<span class="ghost">01</span>
+			</div>
+		</div>
+		<div class="wrap">
+			<p>Menus, HUDs, shops and inventories that feel good to use and stay out of the way.</p>
+			<div class="tags"><span class="tag">HUD</span><span class="tag">Menus</span><span class="tag">Inventory</span><span class="tag">Shops</span></div>
+			<div class="media-grid">
+				<div class="media wide"><img src="assets/ui-cb2-menu.jpg" alt="Game lobby menu with play, inventory and store tabs, friends list and news feed" loading="lazy"></div>
+				<div class="media"><img src="assets/ui-baseball-roster.jpg" alt="Baseball roster lineup screen with player cards laid out on a diamond" loading="lazy"></div>
+				<div class="media"><img src="assets/ui-hockey-victory.jpg" alt="Hockey victory screen with team score and MVP player cards" loading="lazy"></div>
+				<div class="media"><img src="assets/ui-divers-shop.jpg" alt="NPC shop interface with dialogue, item list and sell flow" loading="lazy"></div>
+				<div class="media"><img src="assets/ui-divers-upgrades.jpg" alt="Upgrades menu with harpoon stats, rarities and purchase actions" loading="lazy"></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="reveal">
+		<div class="band">
+			<div class="wrap sec-head">
+				<h2>Environmental Design</h2>
+				<span class="ghost">02</span>
+			</div>
+		</div>
+		<div class="wrap">
+			<p>Islands, stadiums, interiors and set pieces. I like building places that feel like someone actually lives there.</p>
+			<div class="tags"><span class="tag">Islands</span><span class="tag">Stadiums</span><span class="tag">Interiors</span><span class="tag">Set Pieces</span></div>
+			<div class="media-grid">
+				<div class="media wide"><img src="assets/env-twins-stadium.jpg" alt="Twins branded baseball stadium with crowd, scoreboard and Target Field sign" loading="lazy"><span class="badge">Concept Pitch</span></div>
+				<div class="media"><img src="assets/env-reef.jpg" alt="Colorful underwater reef crater with coral, kelp and fish" loading="lazy"></div>
+				<div class="media"><img src="assets/env-sushi-restaurant.jpg" alt="Sushi restaurant exterior with rooftop fish sign and glass dining room" loading="lazy"></div>
+				<div class="media"><img src="assets/env-night-island.jpg" alt="Island hilltop at night under a starry sky with lanterns and display cases" loading="lazy"></div>
+				<div class="media"><img src="assets/env-tunnel.jpg" alt="Foggy road crossing through twin rock tunnels at dusk" loading="lazy"></div>
+				<div class="media"><img src="assets/env-boss-arena.jpg" alt="Forest boss arena with a giant horned skull knight and torch pillars" loading="lazy"></div>
+				<div class="media"><img src="assets/env-football-stadium.jpg" alt="Football stadium interior concourse overlooking the field" loading="lazy"></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="reveal">
+		<div class="band">
+			<div class="wrap sec-head">
+				<h2>3D Modeling</h2>
+				<span class="ghost">03</span>
+			</div>
+		</div>
+		<div class="wrap">
+			<p>Props, gear and buildings. Modeled clean and built to run well in game.</p>
+			<div class="tags"><span class="tag">Gear</span><span class="tag">Props</span><span class="tag">Game-Ready</span></div>
+			<div class="media-grid">
+				<div class="media"><img src="assets/3d-yankees-gear.jpg" alt="Four Roblox rigs wearing modeled Yankees uniforms and catcher gear" loading="lazy"><span class="badge">Concept Pitch</span></div>
+				<div class="media"><img src="assets/3d-mlb-gear.jpg" alt="Modeled baseball gloves, catcher chest protector, helmet and bats" loading="lazy"><span class="badge">Concept Pitch</span></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="reveal">
+		<div class="band">
+			<div class="wrap sec-head">
+				<h2>Graphic Design</h2>
+				<span class="ghost">04</span>
+			</div>
+		</div>
+		<div class="wrap">
+			<p>Logos, thumbnails and loading screens. The stuff that sells a game before anyone even plays it.</p>
+			<div class="tags"><span class="tag">Logos</span><span class="tag">Thumbnails</span><span class="tag">Loading Screens</span></div>
+			<div class="media-grid">
+				<div class="media"><img src="assets/gfx-hockey-arcade.jpg" alt="Hockey Arcade logo on a blue and red diagonal loading screen" loading="lazy"></div>
+				<div class="media"><img src="assets/gfx-rbu-thumbnail.jpg" alt="Baseball game thumbnail with a batter mid-swing and logo" loading="lazy"></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="reveal">
+		<div class="band">
+			<div class="wrap sec-head">
+				<h2>Devlog</h2>
+				<span class="ghost">05</span>
+			</div>
+		</div>
+		<div class="wrap">
+			<p>Sometimes I record the process. Here is a look at how the stuff above actually gets made.</p>
+			<div class="tags"><span class="tag">Behind The Scenes</span><span class="tag">Process</span></div>
+			<div class="media-grid">
+				<div class="media wide"><iframe src="https://www.youtube-nocookie.com/embed/pMYLf90AfPY" title="Roblox devlog video" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+			</div>
+		</div>
+	</section>
+
+	<footer class="reveal">
+		<div class="wrap">
+			<p>Krispy</p>
+			<p>thanks for scrolling</p>
+			<div class="socials">
+				<a href="https://discord.com/users/449764467434192897" target="_blank" rel="noopener" aria-label="Discord profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.197.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a>
+				<a href="https://www.roblox.com/users/57614724/profile" target="_blank" rel="noopener" aria-label="Roblox profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.926 23.998 0 18.892 5.075.002 24 5.108ZM15.348 10.09l-5.282-1.453-1.414 5.273 5.282 1.453z"/></svg></a>
+			</div>
+		</div>
+	</footer>
+
+	<div class="lightbox" id="Lightbox"><img alt=""></div>
+
+	<script>
+		const Lightbox = document.getElementById("Lightbox");
+		const LightboxImg = Lightbox.querySelector("img");
+
+		document.querySelectorAll(".media img").forEach((Img) => {
+			Img.addEventListener("click", () => {
+				LightboxImg.src = Img.src;
+				LightboxImg.alt = Img.alt;
+				Lightbox.classList.add("open");
+				document.body.style.overflow = "hidden";
+			});
+		});
+
+		const CloseLightbox = () => {
+			Lightbox.classList.remove("open");
+			document.body.style.overflow = "";
+		};
+
+		Lightbox.addEventListener("click", CloseLightbox);
+		document.addEventListener("keydown", (Event) => {
+			if (Event.key === "Escape") CloseLightbox();
+		});
+
+		const Targets = document.querySelectorAll(".reveal");
+		const Observer = new IntersectionObserver((Entries) => {
+			for (const Entry of Entries) {
+				if (Entry.isIntersecting) {
+					Entry.target.classList.add("in");
+					Observer.unobserve(Entry.target);
+				}
+			}
+		}, { threshold: 0.1 });
+		Targets.forEach((Target) => Observer.observe(Target));
+	</script>
+
+</body>
+</html>
