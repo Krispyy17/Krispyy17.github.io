@@ -311,7 +311,6 @@
 			background:
 				repeating-linear-gradient(-45deg, transparent 0 10px, rgba(255, 255, 255, 0.012) 10px 11px),
 				linear-gradient(180deg, #21242a, #191c21);
-			border: 1px solid rgba(255, 255, 255, 0.04);
 			border-radius: 4px;
 			display: flex;
 			align-items: center;
@@ -320,18 +319,14 @@
 			font-family: "IBM Plex Mono", monospace;
 			font-size: 0.78rem;
 			overflow: hidden;
-			box-shadow:
-				inset 0 1px 0 rgba(255, 255, 255, 0.04),
-				0 14px 28px -14px rgba(0, 0, 0, 0.55);
-			transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+			box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.55);
+			transition: transform 0.25s, box-shadow 0.25s;
 			transition-timing-function: cubic-bezier(0.2, 0.6, 0.2, 1);
 		}
 
 		.media:hover {
-			border-color: #66c0f4;
 			transform: translateY(-3px);
 			box-shadow:
-				inset 0 1px 0 rgba(255, 255, 255, 0.04),
 				0 22px 40px -16px rgba(0, 0, 0, 0.65),
 				0 0 18px rgba(102, 192, 244, 0.16);
 		}
